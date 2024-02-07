@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
-import { Datas, getAllRegisters } from "../api/apiConection"
+import { Datas, getAllRegisters } from "../api/headerFileApi"
 
 export default function Operations() {
     const [selectedDate, setSelectedDate] = useState('')
@@ -23,10 +23,6 @@ export default function Operations() {
     }, [])
 
     function callRegister() {
-        const headerFile = registers.map((regis: Datas) => regis.encabezadoArchivo)
-        console.log(headerFile)
-        const filterHeaderFiles = [...new Set(headerFile)]
-        console.log(filterHeaderFiles)
     }
 
     return (
@@ -52,8 +48,6 @@ export default function Operations() {
                                 <li className="m-5">
                                 <article>
                                     <h3>{regis.encabezadoArchivo.substring(0, 55)}</h3>
-                                    <h3>{regis.encabezadoLote.substring(0, 19)}</h3>
-                                    <h3>{regis.registroDetalle.substring(0, 101)}</h3>
                                     <h3>{regis.fecha}</h3>
                                 </article>
                             </li>

@@ -2,11 +2,13 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
-from registers import views
+from .views import HeaderFileView, HeaderLoteView, RegisterDetailView
 
 
 router = routers.DefaultRouter()
-router.register(r'registers', views.RegisterView, 'registers')
+router.register(r'headerFile', HeaderFileView, 'headerFile')
+router.register(r'headerLote', HeaderLoteView, 'headerLote')
+router.register(r'registerDetail', RegisterDetailView, 'registerDetail')
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),

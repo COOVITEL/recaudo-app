@@ -1,8 +1,20 @@
 from rest_framework import serializers
-from .models import Register
+from .models import HeaderFile, HeaderLote, RegisterDetail
 
-class RegisterSerializer(serializers.ModelSerializer):
+class HeaderFileSerializer(serializers.ModelSerializer):
     """"""
     class Meta:
-        model = Register
+        model = HeaderFile
+        fields = "__all__"
+
+class HeaderLoteSerializer(serializers.ModelSerializer):
+    """"""
+    class Meta:
+        model = HeaderLote
+        fields = "__all__"
+        
+class RegisterDetailSerializer(serializers.ModelSerializer):
+    """"""
+    class Meta:
+        model = RegisterDetail
         fields = "__all__"

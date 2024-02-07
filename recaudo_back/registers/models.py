@@ -1,15 +1,16 @@
 from django.db import models
-
-class Register(models.Model):
+    
+class HeaderFile(models.Model):
     """"""
-    encabezadoArchivo = models.CharField(max_length=162)
-    encabezadoLote = models.CharField(max_length=162)
-    registroDetalle = models.CharField(max_length=162)
-    controlLote = models.CharField(max_length=162)
-    controlArchivo = models.CharField(max_length=162)
+    encabezadoArchivo = models.CharField(max_length=162, unique=True)
     fecha = models.DateField()
     
-    
-def __str__(self):
+class HeaderLote(models.Model):
     """"""
-    return f"Registro {self.fecha}"
+    encabezadoArchivo = models.ForeignKey(HeaderFile, on_delete=models.CASCADE)
+    encabezadoLote = models.CharField(max_length=162, unique=True)
+
+class RegisterDetail(models.Model):
+    """"""
+    encabezadoLote = models.ForeignKey(HeaderLote, on_delete=models.CASCADE)
+    registroDetalle = models.CharField(max_length=162)

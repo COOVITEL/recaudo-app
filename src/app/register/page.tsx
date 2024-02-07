@@ -1,8 +1,10 @@
 "use client"
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import currentDate from "./date";
-import Barcode from "./Barcode";
+import { currentDate } from "./components/date";
+import Barcode from "./components/Barcode";
+import setDatas from "./components/setDatas";
 
 export default function Home() {
 
@@ -59,13 +61,12 @@ export default function Home() {
      } else {
        window.removeEventListener("keydown", handleKeyDown);
      }
-     // Cleanup function to remove the event listener when the component unmounts
      return () => {
        window.removeEventListener("keydown", handleKeyDown);
      };
   }, [styleCode, count]);
  
-  function ListenCode() {
+  function cleanDates() {
     setCode("")
     setConvenio("")
     setCount(0)
@@ -74,11 +75,21 @@ export default function Home() {
     setFactura("")
     setSpan(false)
     setButton(false)
+  }
+
+  function ListenCode() {
+    cleanDates()
     setStyleCode((prevStyleCode) => !prevStyleCode);
   }
 
+  function sendRegister() {
+    cleanDates()
+    setButton(false)
+    setDatas({convenio, valuePay, factura})
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-2">
+    <main className="relative flex min-h-screen flex-col items-center justify-center gap-2">
       <h1 className="text-5xl font-mono m-6">Recaudos Impuestos</h1>
       <div
         onClick={ListenCode}
@@ -95,7 +106,13 @@ export default function Home() {
         <h3><strong>N. Factura:</strong> {factura}</h3>
         <h3><strong>Convenio:</strong> {convenio}</h3>
       </div>
-      <button className={`cursor-pointer text-2xl px-4 py-2 rounded-md bg-[#007eb8] text-white border-2 hover:bg-[#2d2e83] transition duration-300 hover:scale-105 ${button ? '' : 'hidden'}`}>Enviar</button>
+      <button
+        className={`cursor-pointer text-2xl px-4 py-2 rounded-md bg-[#007eb8] text-white border-2 hover:bg-[#2d2e83] transition duration-300 hover:scale-105 ${button ? '' : 'hidden'}`}
+        onClick={() => sendRegister()}
+        >
+        Enviar
+      </button>
+      <Link className="absolute text-white rounded-md hover:bg-[#2d2e83] transition duration-300 hover:scale-105 bg-[#007eb8] px-3 py-1 left-10 bottom-10" href={"/"}>Volver</Link>
     </main>
   );
 }

@@ -13,4 +13,4 @@ const registerApi = axios.create({
 
 export const createRegister = (dates: Datas) => registerApi.post('/', dates)
 
-export const getAllRegisters = () => registerApi.post('/')
+export const getAllRegisters = () => registerApi.get('/')

@@ -17,6 +17,8 @@ export default function Home() {
   const [styleCode, setStyleCode] = useState(false)
   const [span, setSpan] = useState(false)
   const [button, setButton] = useState(false)
+  const [successRegis, setSuccessRegis] = useState(false)
+  const [faildRegis, setFaildRegis] = useState(false)
  
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter") {
@@ -78,15 +80,23 @@ export default function Home() {
   }
 
   function ListenCode() {
+    setSuccessRegis(false)
+    setFaildRegis(false)
     cleanDates()
     setStyleCode((prevStyleCode) => !prevStyleCode);
   }
 
-  function sendRegister() {
-    cleanDates()
-    setButton(false)
-    setDatas({convenio, valuePay, factura})
+  async function sendRegister() {
+    cleanDates();
+    setButton(false);
+    const success = await setDatas({ convenio, valuePay, factura });
+    if (success) {
+      setSuccessRegis(true);
+    } else {
+      setFaildRegis(true);
+    }
   }
+  
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center gap-2">
@@ -99,6 +109,8 @@ export default function Home() {
         <h1 className="text-center pb-5">Escanear codigo</h1>
       </div>
         <h4 className={`text-5xl text-red-600 ${span ? '' : 'hidden'}`}>La fecha de pago expiro</h4>
+        {successRegis && <span className="text-2xl border-b-2 border-[#007eb8] text-[#007eb8] font-semibold">Registro de Recaudo Exitoso</span>}
+        {faildRegis && <span className="text-2xl border-b-2 border-red-600 text-red-600 font-semibold">Registro de Recaudo Fallido</span>}
       <div>
         <h3><strong>Codigo:</strong> {code}</h3>
         <h3><strong>Fecha:</strong> {date}</h3>
@@ -106,6 +118,7 @@ export default function Home() {
         <h3><strong>N. Factura:</strong> {factura}</h3>
         <h3><strong>Convenio:</strong> {convenio}</h3>
       </div>
+
       <button
         className={`cursor-pointer text-2xl px-4 py-2 rounded-md bg-[#007eb8] text-white border-2 hover:bg-[#2d2e83] transition duration-300 hover:scale-105 ${button ? '' : 'hidden'}`}
         onClick={() => sendRegister()}

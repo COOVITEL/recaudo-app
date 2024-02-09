@@ -2,27 +2,35 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
-import { Datas, getAllRegisters } from "../api/headerFileApi"
+import { RegistersDates, getAllRegister } from "../api/registersRecaudos"
 
 export default function Operations() {
     const [selectedDate, setSelectedDate] = useState('')
-    const [registers, setRegisters] = useState([])
-    const [headerFiles, setHeaderFiles] = useState([])
+    const [registers, setRegisters] = useState<RegistersDates[]>([])
+    const [filterRegister, setFilterRegister] = useState<RegistersDates[]>([])
+    const [filterHeaderFile, setFilterHeaderFile] = useState([]) 
+
+    useEffect(() => {
+        async function callRegis() {
+            const res = await getAllRegister()
+            setRegisters(res.data)
+        }
+        callRegis()
+    }, [])
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let date = event.target.value
         setSelectedDate(date)
     }
 
-    useEffect(() => {
-        async function callRegis() {
-            const res = await getAllRegisters()
-            setRegisters(res.data)
-        }
-        callRegis()
-    }, [])
-
     function callRegister() {
+        if (selectedDate != "") {
+            const filter = registers.filter((regis) => regis.fecha == selectedDate)
+            setFilterRegister(filter)
+            const headerFile = filter.map((regis) => regis.encabezadoArchivo)
+            const filterHeaderFilt = [...new Set(headerFile)]
+            setFilterHeaderFile(filterHeaderFilt)
+        }
     }
 
     return (
@@ -42,17 +50,9 @@ export default function Operations() {
             </div>
             <div>
                 <ul>
-                    {registers.map((regis: Datas) => {
-
-                            return (
-                                <li className="m-5">
-                                <article>
-                                    <h3>{regis.encabezadoArchivo.substring(0, 55)}</h3>
-                                    <h3>{regis.fecha}</h3>
-                                </article>
-                            </li>
-                        )
-                    })}
+                    {filterRegister.map((regis, index) => (
+                        <li key={index}>{regis.encabezadoArchivo}</li>
+                    ))}
                 </ul>
             </div>
           <Link className="absolute text-white rounded-md hover:bg-[#2d2e83] transition duration-300 hover:scale-105 bg-[#007eb8] px-3 py-1 left-10 bottom-10" href={"/"}>Volver</Link>

@@ -1,22 +1,12 @@
 from rest_framework import viewsets
-from .serializer import HeaderFileSerializer, HeaderLoteSerializer, RegisterDetailSerializer
-from .models import HeaderFile, HeaderLote, RegisterDetail
+from .serializer import RegisterSerializer
+from .models import RegistersRecaudos
 from rest_framework.permissions import IsAuthenticated
 
-class HeaderFileView(viewsets.ModelViewSet):
+class RegistersView(viewsets.ModelViewSet):
     """ This class created a view of the objects created for teh turn class"""
     #permission_classes = [IsAuthenticated]
-    serializer_class = HeaderFileSerializer
-    queryset = HeaderFile.objects.all()
+    serializer_class = RegisterSerializer
+    queryset = RegistersRecaudos.objects.all()
 
-class HeaderLoteView(viewsets.ModelViewSet):
-    """ This class created a view of the objects created for teh turn class"""
-    #permission_classes = [IsAuthenticated]
-    serializer_class = HeaderLoteSerializer
-    queryset = HeaderLote.objects.all()
 
-class RegisterDetailView(viewsets.ModelViewSet):
-    """ This class created a view of the objects created for teh turn class"""
-    #permission_classes = [IsAuthenticated]
-    serializer_class = RegisterDetailSerializer
-    queryset = RegisterDetail.objects.all()

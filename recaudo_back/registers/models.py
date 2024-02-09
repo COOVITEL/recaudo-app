@@ -1,16 +1,8 @@
 from django.db import models
     
-class HeaderFile(models.Model):
+class RegistersRecaudos(models.Model):
     """"""
-    encabezadoArchivo = models.CharField(max_length=162, unique=True)
-    fecha = models.DateField()
-    
-class HeaderLote(models.Model):
-    """"""
-    encabezadoArchivo = models.ForeignKey(HeaderFile, on_delete=models.CASCADE)
-    encabezadoLote = models.CharField(max_length=162, unique=True)
-
-class RegisterDetail(models.Model):
-    """"""
-    encabezadoLote = models.ForeignKey(HeaderLote, on_delete=models.CASCADE)
+    encabezadoArchivo = models.CharField(max_length=162)
+    encabezadoLote = models.CharField(max_length=162)
     registroDetalle = models.CharField(max_length=162)
+    fecha = models.DateField()

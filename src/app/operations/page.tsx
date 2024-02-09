@@ -96,7 +96,7 @@ export default function Operations() {
                             {filters.map((regis, indexx) => {
                                 if (regis.encabezadoLote === lote) {
                                 count++;
-                                return <li key={`detalle-${indexx}`}>{regis.registroDetalle.slice(0, -1)}{count}${zero}</li>;
+                                return <li key={`detalle-${indexx}`}>{regis.registroDetalle.slice(0, -1)}{count}</li>;
                                 }
                                 return null;
                             })}

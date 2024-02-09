@@ -8,14 +8,6 @@
   --background-end-rgb: 215, 215, 225;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 50, 50, 50;
-    --background-end-rgb: 20, 20, 20;
-  }
-}
-
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -26,8 +18,6 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+li {
+  color: black;
 }

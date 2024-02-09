@@ -19,11 +19,14 @@ export default function Home() {
   const [button, setButton] = useState(false)
   const [successRegis, setSuccessRegis] = useState(false)
   const [faildRegis, setFaildRegis] = useState(false)
+  const [scanCode, setScanCode] = useState(false)
+  const [numRecaudo, setNumRecaudo] = useState("")
  
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter") {
       window.removeEventListener("keydown", handleKeyDown);
       setStyleCode(false)
+      setScanCode(false)
       if (code != "") {
         setDate(code.substring(52, 60))
         const current = currentDate()
@@ -58,14 +61,15 @@ export default function Home() {
   }
 
   useEffect(() => {
-     if (styleCode) {
-       window.addEventListener("keydown", handleKeyDown);
-     } else {
-       window.removeEventListener("keydown", handleKeyDown);
-     }
-     return () => {
-       window.removeEventListener("keydown", handleKeyDown);
-     };
+    if (styleCode) {
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      setScanCode(false)
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [styleCode, count]);
  
   function cleanDates() {
@@ -80,6 +84,7 @@ export default function Home() {
   }
 
   function ListenCode() {
+    setScanCode(true)
     setSuccessRegis(false)
     setFaildRegis(false)
     cleanDates()
@@ -89,8 +94,9 @@ export default function Home() {
   async function sendRegister() {
     cleanDates();
     setButton(false);
-    const success = await setDatas({ convenio, valuePay, factura });
-    if (success) {
+    const result: Object = await setDatas({ convenio, valuePay, factura });
+    if (result.success) {
+      setNumRecaudo(result.data)
       setSuccessRegis(true);
     } else {
       setFaildRegis(true);
@@ -100,32 +106,35 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center gap-2">
-      <h1 className="text-5xl font-mono m-6">Recaudos Impuestos</h1>
-      <div
-        onClick={ListenCode}
-         className={`flex flex-col h-[300px] cursor-pointer justify-center mb-5 items-center border-2 rounded-lg border-gray-500 border-solid hover:scale-105 transition-all duration-300 ${!styleCode ? '' : 'bg-blue-400/50'}`}
-        >
-        <Barcode />
-        <h1 className="text-center pb-5">Escanear codigo</h1>
-      </div>
-        <h4 className={`text-5xl text-red-600 ${span ? '' : 'hidden'}`}>La fecha de pago expiro</h4>
-        {successRegis && <span className="text-2xl border-b-2 border-[#007eb8] text-[#007eb8] font-semibold">Registro de Recaudo Exitoso</span>}
-        {faildRegis && <span className="text-2xl border-b-2 border-red-600 text-red-600 font-semibold">Registro de Recaudo Fallido</span>}
-      <div>
-        <h3><strong>Codigo:</strong> {code}</h3>
-        <h3><strong>Fecha:</strong> {date}</h3>
-        <h3><strong>Monto:</strong> {valuePay}</h3>
-        <h3><strong>N. Factura:</strong> {factura}</h3>
-        <h3><strong>Convenio:</strong> {convenio}</h3>
-      </div>
+      <h1 className="text-5xl font-medium m-6">Recaudos Impuestos</h1>
+      <div className="flex flex-col justify-center items-center bg-white py-5 px-10 rounded-2xl">
+        <div
+          onClick={ListenCode}
+          className={`flex flex-col h-[250px] cursor-pointer justify-center mb-5 items-center border-2 rounded-lg border-gray-500 border-solid hover:scale-105 transition-all duration-300 ${!styleCode ? '' : 'bg-blue-400/50'}`}
+          >
+          <Barcode />
+          <h1 className="text-center pb-5">Escanear codigo</h1>
+        </div>
+          {span && <h4 className={`text-5xl text-red-600`}>La fecha de pago expiro</h4>}
+          {successRegis && <span className="text-2xl border-b-2 border-[#007eb8] text-[#007eb8] font-semibold">Registro de Recaudo Exitoso - # {numRecaudo.toString().padStart(5, "0")}</span>}
+          {faildRegis && <span className="text-2xl border-b-2 border-red-600 text-red-600 font-semibold">Registro de Recaudo Fallido</span>}
+          {scanCode && <span className="text-2xl font-mono font-semibold">Por favor escanee el codigo</span>}
+        <div className="flex flex-col items-center justify-center">
+          <h3><strong>Codigo:</strong> {code}</h3>
+          <h3><strong>Fecha:</strong> {date}</h3>
+          <h3><strong>Monto:</strong> {valuePay}</h3>
+          <h3><strong>N. Factura:</strong> {factura}</h3>
+          <h3><strong>Convenio:</strong> {convenio}</h3>
+        </div>
 
-      <button
-        className={`cursor-pointer text-2xl px-4 py-2 rounded-md bg-[#007eb8] text-white border-2 hover:bg-[#2d2e83] transition duration-300 hover:scale-105 ${button ? '' : 'hidden'}`}
-        onClick={() => sendRegister()}
-        >
-        Enviar
-      </button>
-      <Link className="absolute text-white rounded-md hover:bg-[#2d2e83] transition duration-300 hover:scale-105 bg-[#007eb8] px-3 py-1 left-10 bottom-10" href={"/"}>Volver</Link>
+        <button
+          className={`cursor-pointer text-2xl mt-4 px-4 py-2 rounded-md bg-[#007eb8] text-white border-2 hover:bg-[#2d2e83] transition duration-300 hover:scale-105 ${button ? '' : 'hidden'}`}
+          onClick={() => sendRegister()}
+          >
+          Enviar
+        </button>
+        <Link className="absolute text-white rounded-md hover:bg-[#2d2e83] transition duration-300 hover:scale-105 bg-[#007eb8] px-3 py-1 left-10 bottom-10" href={"/"}>Volver</Link>
+        </div>
     </main>
   );
 }

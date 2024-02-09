@@ -5,6 +5,7 @@ export interface RegistersDates {
     encabezadoLote: string
     registroDetalle: string
     fecha: string
+    id?: number
 }
 
 const registerRecaudo = axios.create({

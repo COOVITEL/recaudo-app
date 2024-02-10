@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { currentDate } from "./components/date";
 import Barcode from "./components/Barcode";
 import setDatas from "./components/setDatas";
@@ -22,44 +22,43 @@ export default function Home() {
   const [scanCode, setScanCode] = useState(false)
   const [numRecaudo, setNumRecaudo] = useState("")
  
-  function handleKeyDown(event: KeyboardEvent) {
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === "Enter") {
       window.removeEventListener("keydown", handleKeyDown);
-      setStyleCode(false)
-      setScanCode(false)
-      if (code != "") {
-        setDate(code.substring(52, 60))
-        const current = currentDate()
-        if (parseInt(code.substring(52, 60)) < parseInt(current)) {
-          setSpan(true)
+      setStyleCode(false);
+      setScanCode(false);
+      if (code !== "") {
+        setDate(code.substring(52,  60));
+        const current = currentDate();
+        if (parseInt(code.substring(52,  60)) < parseInt(current)) {
+          setSpan(true);
         } else {
-          setValuePay(code.substring(36 ,50))
-          setFactura(code.substring(20, 32))
-          setConvenio(code.substring(3, 16))
-          setButton(true)
+          setValuePay(code.substring(36,  50));
+          setFactura(code.substring(20,  32));
+          setConvenio(code.substring(3,  16));
+          setButton(true);
         }
       }
       return;
     }
-    if (event.key !== "Alt" && event.key !== "(" && event.key != ")") {
-      if ((count == 32 || count == 53) && event.key == "0") {
-        setCount((prevCount) => prevCount + 1)
-        return
+    if (event.key !== "Alt" && event.key !== "(" && event.key !== ")") {
+      if ((count ===  32 || count ===  53) && event.key === "0") {
+        setCount((prevCount) => prevCount +  1);
+        return;
       }
-      if ((count == 33 || count == 54) && event.key == "2") {
-        setCount((prevCount) => prevCount + 1)
-        return
+      if ((count ===  33 || count ===  54) && event.key === "2") {
+        setCount((prevCount) => prevCount +  1);
+        return;
       }
-      if ((count == 34 || count == 55) && event.key == "9") {
-        setCount((prevCount) => prevCount + 1)
-        return
-      }else {
+      if ((count ===  34 || count ===  55) && event.key === "9") {
+        setCount((prevCount) => prevCount +  1);
+        return;
+      } else {
         setCode((prevCode) => prevCode + event.key);
-        setCount((prevCount) => prevCount + 1)
+        setCount((prevCount) => prevCount +  1);
       }
     }
-  }
-
+  }, [code, count]);
   useEffect(() => {
     if (styleCode) {
       window.addEventListener("keydown", handleKeyDown);
@@ -70,7 +69,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [styleCode, count]);
+  }, [styleCode, count, handleKeyDown]);
  
   function cleanDates() {
     setCode("")

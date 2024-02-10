@@ -4,11 +4,6 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { RegistersDates, getAllRegister } from "../api/registersRecaudos"
 
-interface countDates {
-    headerLote: string[],
-    allDates: RegistersDates
-}
-
 export default function Operations() {
     const [selectedDate, setSelectedDate] = useState('')
     const [registers, setRegisters] = useState<RegistersDates[]>([])
@@ -18,7 +13,8 @@ export default function Operations() {
     const [displayDates, setDisplayDates] = useState(false)
     const [sumValues, setSumValues] = useState({})
     const [sumTotal, setSumTotal] = useState(0)
-    const zero = "0"
+    const [foundRegisters, setFoundRegisters] = useState(false)
+    const zero = "."
 
     useEffect(() => {
         async function callRegis() {
@@ -30,6 +26,7 @@ export default function Operations() {
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let date = event.target.value
+        setFoundRegisters(false)
         setDisplayDates(false)
         setFilters([])
         setFilterHeaderFile([])
@@ -43,7 +40,6 @@ export default function Operations() {
             result[lote] = 0
             registers.forEach(regis => {
                 if (regis.encabezadoLote == lote) {
-                    console.log(regis.registroDetalle.substring(50, 66))
                     result[lote] += parseInt(regis.registroDetalle.substring(50, 66))
                 }
             })
@@ -52,8 +48,10 @@ export default function Operations() {
     }
 
     function callRegister() {
+        const filter = registers.filter((regis) => regis.fecha == selectedDate)
+        if (filter.length > 0) {
             setDisplayDates(true)
-            const filter = registers.filter((regis) => regis.fecha == selectedDate)
+            setFoundRegisters(false)
             setFilters(filter)
             const headerFile = filter.map((regis) => regis.encabezadoArchivo)
             const filterfiles = [...new Set(headerFile)]
@@ -64,6 +62,9 @@ export default function Operations() {
             const values = calculateValues(filterLotes, filter)
             setSumValues(values)
             setSumTotal(Object.values(values).reduce((total, value) => total + value, 0))
+        } else {
+            setFoundRegisters(true)
+        }
     }
 
     return (
@@ -83,30 +84,33 @@ export default function Operations() {
                     <h4>Fecha: {selectedDate}</h4>
                 </div>
             </div>
-            <div className={`m-5 p-5 bg-white rounded-lg shadow-gray-800 shadow-lg ${displayDates ? '' : 'hidden'}`}>
-                <ul>
-                    <li>{filterHeaderFile[0]}{zero.padEnd(107, "_")}</li>
-                    {filterHeaderLote.map((lote, index) => {
-                        let ind = index + 1
-                        let count =  1;
+            {foundRegisters && <span>No se encontraton datos registrados</span>}
+            {displayDates && 
+                <div className="m-5 p-5 bg-white rounded-lg shadow-gray-800 shadow-lg">
+                    <ul>
+                        <li>{filterHeaderFile[0]}{zero.padEnd(107, zero)}</li>
+                        {filterHeaderLote.map((lote, index) => {
+                            let ind = index + 1
+                            let count =  1;
 
-                        return (
-                            <>
-                            <li key={`lote-${index}`}>{lote}{zero.padEnd(143, "_")}</li>
-                            {filters.map((regis, indexx) => {
-                                if (regis.encabezadoLote === lote) {
-                                count++;
-                                return <li key={`detalle-${indexx}`}>{regis.registroDetalle.slice(0, -1)}{count}</li>;
-                                }
-                                return null;
-                            })}
-                            <li>{`08${(count - 1).toString().padStart(9, "0")}${sumValues[lote].toString().padStart(18, "0")}${ind.toString().padStart(4, "0")}`}</li>
-                            </>
-                    );
-                    })}
-                    <li>09{filters.length.toString().padStart(9, "0")}{sumTotal.toString().padStart(18, "0")}</li>
-                </ul>
-            </div>
+                            return (
+                                <>
+                                <li key={`lote-${index}`}>{lote}{zero.padEnd(143, zero)}</li>
+                                {filters.map((regis, indexx) => {
+                                    if (regis.encabezadoLote === lote) {
+                                    count++;
+                                    return <li key={`detalle-${indexx}`}>{regis.registroDetalle.slice(0, -7)}{count.toString().padStart(7, "0")}{zero.padEnd(68, zero)}</li>;
+                                    }
+                                    return null;
+                                })}
+                                <li>{`08${(count - 1).toString().padStart(9, "0")}${sumValues[lote].toString().padStart(18, "0")}${ind.toString().padStart(4, "0")}${zero.padEnd(129, zero)}`}</li>
+                                </>
+                        );
+                        })}
+                        <li>09{filters.length.toString().padStart(9, "0")}{sumTotal.toString().padStart(18, "0")}{zero.padEnd(133, zero)}</li>
+                    </ul>
+                </div>
+            }
           <Link className="text-white text-2xl rounded-md hover:bg-[#2d2e83] transition duration-300 hover:scale-105 bg-[#007eb8] px-3 py-1 mt-5 mb-10" href={"/"}>Volver</Link>
         </main>
     )

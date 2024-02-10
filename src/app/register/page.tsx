@@ -6,6 +6,7 @@ import { currentDate } from "./components/date";
 import Barcode from "./components/Barcode";
 import setDatas from "./components/setDatas";
 
+
 export default function Home() {
 
   const [code, setCode] = useState("")
@@ -93,7 +94,7 @@ export default function Home() {
   async function sendRegister() {
     cleanDates();
     setButton(false);
-    const result: Object = await setDatas({ convenio, valuePay, factura });
+    const result = await setDatas({ convenio, valuePay, factura }) as any;
     if (result.success) {
       setNumRecaudo(result.data)
       setSuccessRegis(true);

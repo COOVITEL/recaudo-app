@@ -4,6 +4,10 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { RegistersDates, getAllRegister } from "../api/registersRecaudos"
 
+interface SumValuesState {
+    [key: string]: number;
+  }
+
 export default function Operations() {
     const [selectedDate, setSelectedDate] = useState('')
     const [registers, setRegisters] = useState<RegistersDates[]>([])
@@ -11,7 +15,7 @@ export default function Operations() {
     const [filterHeaderFile, setFilterHeaderFile] = useState<string[]>([])
     const [filterHeaderLote, setFilterHeaderLote] = useState<string[]>([])
     const [displayDates, setDisplayDates] = useState(false)
-    const [sumValues, setSumValues] = useState({})
+    const [sumValues, setSumValues] = useState<SumValuesState>({})
     const [sumTotal, setSumTotal] = useState(0)
     const [foundRegisters, setFoundRegisters] = useState(false)
     const zero = "."
